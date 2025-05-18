@@ -1,0 +1,72 @@
+services:
+  ecommerce-ui:
+    build:
+      context: ./ecommerce-ui
+    image: ecommerce-ui
+    container_name: ecommerce-ui
+    ports:
+      - "4000:4000"
+    environment:
+      - REACT_APP_PROFILE_API_HOST=http://profile-management
+      - REACT_APP_SHIPPING_API_HOST=http://shipping-and-handling
+      - REACT_APP_INVENTORY_API_HOST=http://product-inventory
+      - REACT_APP_CONTACT_API_HOST=http://contact-support-team
+      - REACT_APP_PRODUCT_API_HOST=http://product-catalog
+      - REACT_APP_ORDER_API_HOST=http://order-management
+    depends_on:
+      - profile-management
+      - shipping-and-handling
+      - contact-support-team
+      - product-inventory
+      - product-catalog
+      - order-management
+  profile-management:
+    build:
+      context: ./profile-management
+    image: profile-management
+    container_name: profile-management
+    ports:
+      - "3003:3003"
+  shipping-and-handling:
+    build:
+      context: ./shipping-and-handling
+    image: shipping-and-handling
+    container_name: shipping-and-handling
+    ports:
+      - "8080:8080"
+  contact-support-team:
+    build:
+      context: ./contact-support-team
+    image: contact-support-team
+    container_name: contact-support-team
+    ports:
+      - "8000:8000"
+  product-inventory:
+    build:
+      context: ./product-inventory
+    image: product-inventory
+    container_name: product-inventory
+    ports:
+      - "3002:3002"
+  product-catalog:
+    build:
+      context: ./product-catalog
+    image: product-catalog
+    container_name: product-catalog
+    ports:
+      - "3001:3001"
+  order-management:
+    build:
+      context: ./order-management
+    image: order-management
+    container_name: order-management
+    ports:
+      - "9090:9090"
+    environment:
+      - PRODUCT_INVENTORY_API_HOST=http://product-inventory
+      - PRODUCT_CATALOG_API_HOST=http://product-catalog
+      - SHIPPING_HANDLING_API_HOST=http://shipping-and-handling
+    depends_on:
+      - product-catalog
+      - shipping-and-handling
+      - product-inventory

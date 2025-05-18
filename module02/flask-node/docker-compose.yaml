@@ -1,0 +1,35 @@
+services:
+  flask-portal:
+    container_name: flask-portal
+    image: olehandrus/grade-submission-portal
+    ports:
+      - "5001:5001"
+    environment:
+      - GRADE_SERVICE_HOST=node-api
+    depends_on:
+      - node-api
+  node-api:
+    container_name: node-api
+    build:
+      context: "./grade-submission-api"
+    image: node-api
+    environment:
+      - DB_HOST=mongo
+      - DB_PORT=27017
+      - DB_NAME=grade_db
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    container_name: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=grade_db
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+
+  
