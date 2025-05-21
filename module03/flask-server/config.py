@@ -1,1 +1,1 @@
-NEWS_API_KEY = ""
+NEWS_API_KEY = "13dd3cdef6aa48ff9a9aa7331117079a"
