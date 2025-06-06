@@ -1,8 +1,8 @@
 """
 Session
 """
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, MetaData, select
-from sqlalchemy.orm import relationship, declarative_base, sessionmaker
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, select
+from sqlalchemy.orm import relationship, declarative_base, sessionmaker, Mapped, mapped_column
 
 engine = create_engine('sqlite:///:memory:', echo=False)
 DBSession = sessionmaker(bind=engine)
@@ -11,18 +11,37 @@ session = DBSession()
 Base = declarative_base()
 
 
+# class User(Base):
+#     __tablename__ = 'users'
+#     id = Column(Integer, primary_key=True)
+#     fullname = Column(String)
+
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    fullname = Column(String)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    fullname: Mapped[str] = mapped_column()
+
+    addresses: Mapped[list["Address"]] = relationship(back_populates="user")
+
+
+# class Address(Base):
+#     __tablename__ = 'addresses'
+#     id = Column(Integer, primary_key=True)
+#     user_email = Column('email', String(150), nullable=False, index=True)
+#     user_id = Column('user_id', Integer, ForeignKey('users.id'))
+#     user = relationship(User)
 
 
 class Address(Base):
     __tablename__ = 'addresses'
-    id = Column(Integer, primary_key=True)
-    user_email = Column('email', String(150), nullable=False, index=True)
-    user_id = Column('user_id', Integer, ForeignKey('users.id'))
-    user = relationship(User)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_email: Mapped[str] = mapped_column("email", String(150), nullable=False, index=True)
+    user_id: Mapped[int] = mapped_column("user_id", ForeignKey("users.id"))
+
+    user: Mapped[User] = relationship(back_populates="addresses")
+
 
 
 Base.metadata.create_all(engine)
